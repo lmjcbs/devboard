@@ -9,7 +9,8 @@ class LocationSerializer < ActiveModel::Serializer
        salaryGBP: position.salary_gbp,
        experienceRequired: position.experience_required,
        technology: position.technology.name,
-       category: position.category.name}
+       category: position.category.name,
+       location: position.location.city}
     end
   end
 end
