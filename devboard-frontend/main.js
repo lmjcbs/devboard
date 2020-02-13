@@ -36,6 +36,9 @@ const renderTechnlogies = () => {
   fetch(`${BASE_URL}/technologies`)
   .then(resp => resp.json())
   .then(technologies => {
+    const technologiesArray = technologies.map(technology => new Technology(technology))
+    container().innerHTML = technologiesArray.reduce((all, tec) => all += tec.renderTechnology(),'')
+    containerTitle().textContent = 'All Technologies'
   })
 }
 
