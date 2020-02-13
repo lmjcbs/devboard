@@ -1,5 +1,5 @@
 const BASE_URL = 'http://localhost:3000'
-const container = document.getElementById('container')
+const container = document.querySelector('#positions-container');
 
 class Position {
   constructor(pos) {
@@ -13,13 +13,27 @@ class Position {
     this.category = pos.category
     this.technology = pos.technology
   }
+
+  renderPosition() {
+    return `
+    <div id="position-${this.id}">
+      <h3>${this.title} at ${this.company}</h3>
+      <p>${this.location}</p>
+      <p>${this.category} |  ${this.technology}</p>
+      <p>Salary: £${this.salaryGBP}</p>
+      <p>Experience Required: ${this.experienceRequired}</p>
+      <p>${this.description}</p>
+    </div>
+    `
+  }
 }
 
 const renderPositions = () => {
   fetch(`${BASE_URL}/positions`)
   .then(resp => resp.json())
   .then(positions => {
-    const positionsObjArray = positions.map(position => new Position(position))
+    const positionsArray = positions.map(position => new Position(position))
+    positionsArray.forEach(position => container.innerHTML += position.renderPosition())
   })
 }
 
