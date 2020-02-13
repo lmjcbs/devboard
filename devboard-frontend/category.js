@@ -4,4 +4,12 @@ class Category {
     this.name = category.name
     this.positions = category.positions
   }
+
+  renderCategory() {
+    return `
+      <div>
+        <h3>There are ${this.positions.length} ${this.name} positions available</h3>
+      </div>
+    `
+  }
 }
