@@ -27,7 +27,8 @@ const renderCategories = () => {
   .then(resp => resp.json())
   .then(categories => {
     const categoriesArray = categories.map(category => new Category(category))
-    console.log(categoriesArray)
+    container().innerHTML = categoriesArray.reduce((all, cat) => all += cat.renderCategory(),'')
+    containerTitle().textContent = 'All Categories'
   })
 }
 
