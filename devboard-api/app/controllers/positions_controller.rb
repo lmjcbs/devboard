@@ -9,9 +9,6 @@ class PositionsController < ApplicationController
   # POST /positions
   def create
     @position = Position.new(position_params)
-    # @position.set_location(params[:position][:city])
-    # @position.set_technology(params[:position][:technology])
-    # @position.set_category(params[:position][:category])
     if @position.save
       render json: @position, status: :created
     else
@@ -45,6 +42,6 @@ class PositionsController < ApplicationController
   end
 
   def position_params
-    params.require(:position).permit(:title, :company, :description, :category, :location, :technology, :salary_gbp, :experience_required)
+    params.permit(:title, :company, :description, :category, :location, :technology, :salary_gbp, :experience_required)
   end
 end
