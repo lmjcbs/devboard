@@ -8,7 +8,7 @@ class Location {
   renderLocation() {
     return `
       <div>
-        <h3>${this.city} has ${this.positions.length()} positions available</h3>
+        <h3>${this.city} has ${this.positions.length} positions available</h3>
       </div>
     `
   }
