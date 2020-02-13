@@ -45,7 +45,7 @@ const renderTechnologies = () => {
 const renderPositionForm = () => {
   containerTitle().textContent = 'Advertise your own position'
   container().innerHTML = `
-    <form onsubmit="createPosition();return false;>
+    <form>
 
       <label for="title">Title</label>
       <input type="text" id="title" name="title" class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 pl-10 appearance-none leading-normal"><br>
@@ -62,11 +62,11 @@ const renderPositionForm = () => {
       <label for="technology">Technology</label>
       <input type="text" id="technology" name="technology" class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 pl-10 appearance-none leading-normal"><br>
 
-      <label for="salary_gbp">Salary</label>
+      <label for="salary-gbp">Salary</label>
       <input type="text" id="salary-gbp" name="salary-gbp" class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 pl-10 appearance-none leading-normal"><br>
 
-      <label for="experience_required">Experience Required</label>
-      <input type="text" id="experience_required" name="experience_required" class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 pl-10 appearance-none leading-normal"><br>
+      <label for="experience-required">Experience Required</label>
+      <input type="text" id="experience-required" name="experience-required" class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 pl-10 appearance-none leading-normal"><br>
 
       <label for="description">Description</label>
       <textarea id="description" name="description" class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-8 px-2 pl-10 appearance-none leading-normal"></textarea><br>
@@ -74,6 +74,36 @@ const renderPositionForm = () => {
       <input type="submit" value="Submit">
     </form>
   `
+  document.querySelector('input[type="submit"]').addEventListener('click', (e) => {
+    e.preventDefault();
+    createPosition();
+  })
+}
+
+const createPosition = () => {
+  const position = {
+    title: document.querySelector('#title').value,
+    company: document.querySelector('#company').value,
+    location: document.querySelector('#location').value,
+    category: document.querySelector('#category').value,
+    technology: document.querySelector('#technology').value,
+    salary_gbp: document.querySelector('#salary-gbp').value,
+    experience_required: document.querySelector('#experience-required').value,
+    description: document.querySelector('#description').value
+  }
+  console.log(position)
+  fetch(`${BASE_URL}/positions`,{
+    method: "POST",
+    body: JSON.stringify(position),
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+  })
+  .then(resp => resp.json())
+  .then(position => {
+    console.log(position)
+  })
 }
 
 document.addEventListener("DOMContentLoaded", () => {
