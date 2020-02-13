@@ -6,10 +6,9 @@ const renderPositions = () => {
   fetch(`${BASE_URL}/positions`)
   .then(resp => resp.json())
   .then(positions => {
-    clearContainer()
-    containerTitle().textContent = 'All Positions'
     const positionsArray = positions.map(position => new Position(position))
-    positionsArray.forEach(position => container().innerHTML += position.renderPosition())
+    container().innerHTML = positionsArray.reduce((all, pos) => all += pos.renderPosition(),'')
+    containerTitle().textContent = 'All Positions'
   })
 }
 
@@ -17,10 +16,9 @@ const renderLocations = () => {
   fetch(`${BASE_URL}/locations`)
   .then(resp => resp.json())
   .then(locations => {
-    clearContainer()
-    containerTitle().textContent = 'All Locations'
     const locationsArray = locations.map(location => new Location(location))
-    locationsArray.forEach(location => container().innerHTML += location.renderLocation())
+    container().innerHTML = locationsArray.reduce((all, loc) => all += loc.renderLocation(),'')
+    containerTitle().textContent = 'All Locations'
   })
 }
 
@@ -37,17 +35,9 @@ const renderTechnlogies = () => {
   fetch(`${BASE_URL}/technologies`)
   .then(resp => resp.json())
   .then(technologies => {
-
   })
 }
 
-const clearContainer = () => {
-  document.querySelector('#positionsContainer').innerHTML = ''
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  // console.log(container)
-  // renderPositions()
-  renderLocations()
-
+  renderPositions()
 });
