@@ -19,8 +19,16 @@ const filterPositions = (array, filter) => {
   }
 }
 
-const renderPositions = (filter = undefined) => {
-  getResourceAsync('positions').then(positions => {
+const filterPositionsBySearch = searchTerm => {
+  return getResourceAsync('positions').then(positions => {
+    return positions.filter(pos => {
+      return pos.title.includes(searchTerm) || pos.company.includes(searchTerm)
+    })
+  })
+}
+
+const renderPositions = (positions = getResourceAsync('positions'), filter = undefined) => {
+    positions.then(positions => {
     const positionsArray = positions.map(position => new Position(position))
     const filteredArray = filterPositions(positionsArray, filter);
     container().innerHTML = filteredArray.reduce((all, pos) => all += pos.renderPosition(),'')
@@ -65,7 +73,6 @@ const renderPositionForm = () => {
   containerTitle().textContent = 'Advertise your own position'
   container().innerHTML = `
     <form>
-
       <label for="title">Title</label>
       <input type="text" id="title" name="title" class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 pl-10 appearance-none leading-normal"><br>
 
@@ -123,5 +130,5 @@ const createPosition = () => {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderPositions('byCompanyName')
+  renderPositions()
 });
