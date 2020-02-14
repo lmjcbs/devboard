@@ -2,6 +2,11 @@ const BASE_URL = 'http://localhost:3000'
 const containerTitle = () => document.querySelector('#container-title')
 const container = () => document.querySelector('#positions-container')
 
+async function getResourceAsync(resource) {
+  let response = await fetch(`${BASE_URL}/${resource}`)
+  return await response.json()
+}
+
 const filterPositions = (array, filter) => {
   console.log(filter)
   switch(filter) {
@@ -15,14 +20,21 @@ const filterPositions = (array, filter) => {
 }
 
 const renderPositions = (filter) => {
-  console.log(filter)
-  fetch(`${BASE_URL}/positions`)
-  .then(resp => resp.json())
-  .then((positions) => {
-    const positionsArray = filterPositions(positions.map(position => new Position(position), filter));
-    container().innerHTML = positionsArray.reduce((all, pos) => all += pos.renderPosition(),'')
+  getResourceAsync('positions').then(positions => {
+    let positionsArray = positions.map(position => new Position(position))
+    const filteredArrayArray = filterPositions(positionsArray, filter);
+    container().innerHTML = filteredArrayArray.reduce((all, pos) => all += pos.renderPosition(),'')
     containerTitle().textContent = 'All Positions'
-  }).bind(filter)
+  })
+  // --- OLD IMPLEMENTATION USING FETCH --- 
+  // fetch(`${BASE_URL}/positions`)
+  // .then(resp => resp.json())
+  // .then((positions) => {
+  //   const positionsArray = positions.map(position => new Position(position))
+  //   const filteredArray = filterPositions(positionsArray, filter);
+  //   container().innerHTML = filteredArray.reduce((all, pos) => all += pos.renderPosition(),'')
+  //   containerTitle().textContent = 'All Positions'
+  // })
 }
 
 const renderLocations = () => {
