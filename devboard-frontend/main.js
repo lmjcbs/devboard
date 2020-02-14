@@ -2,14 +2,27 @@ const BASE_URL = 'http://localhost:3000'
 const containerTitle = () => document.querySelector('#container-title')
 const container = () => document.querySelector('#positions-container')
 
-const renderPositions = () => {
+const filterPositions = (array, filter) => {
+  console.log(filter)
+  switch(filter) {
+    case 'bySalary':
+      return array.sort((a,b) => (a.salaryGBP > b.salaryGBP) ? 1 : ((b.salaryGBP > a.salaryGBP) ? -1 : 0));
+    case 'byCompanyName':
+      return array.sort((a,b) => (a.company > b.company) ? 1 : ((b.company > a.company) ? -1 : 0));
+    default:
+      return array
+  }
+}
+
+const renderPositions = (filter) => {
+  console.log(filter)
   fetch(`${BASE_URL}/positions`)
   .then(resp => resp.json())
-  .then(positions => {
-    const positionsArray = positions.map(position => new Position(position))
+  .then((positions) => {
+    const positionsArray = filterPositions(positions.map(position => new Position(position), filter));
     container().innerHTML = positionsArray.reduce((all, pos) => all += pos.renderPosition(),'')
     containerTitle().textContent = 'All Positions'
-  })
+  }).bind(filter)
 }
 
 const renderLocations = () => {
@@ -100,12 +113,9 @@ const createPosition = () => {
         'Accept': 'application/json'
     }
   })
-  .then(resp => resp.json())
-  .then(position => {
-    console.log(position)
-  })
+  .then(renderPositions())
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderPositions()
+  renderPositions('bySalary')
 });
