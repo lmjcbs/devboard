@@ -131,4 +131,9 @@ const createPosition = () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderPositions()
+  document.querySelector('input[type="search"]').addEventListener('search', (e) => {
+    e.preventDefault();
+    let searchTerm = document.querySelector('input[type="search"]').value
+    renderPositions(filterPositionsBySearch(searchTerm))
+  })
 });
