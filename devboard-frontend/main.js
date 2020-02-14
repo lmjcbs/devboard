@@ -9,7 +9,6 @@ async function getResourceAsync(resource) {
 }
 
 const filterPositions = (array, filter) => {
-  console.log(filter)
   switch(filter) {
     case 'bySalary':
       return array.sort((a,b) => (b.salaryGBP > a.salaryGBP) ? 1 : ((a.salaryGBP > b.salaryGBP) ? -1 : 0));
@@ -20,11 +19,11 @@ const filterPositions = (array, filter) => {
   }
 }
 
-const renderPositions = (filter) => {
+const renderPositions = (filter = undefined) => {
   getResourceAsync('positions').then(positions => {
-    let positionsArray = positions.map(position => new Position(position))
-    const filteredArrayArray = filterPositions(positionsArray, filter);
-    container().innerHTML = filteredArrayArray.reduce((all, pos) => all += pos.renderPosition(),'')
+    const positionsArray = positions.map(position => new Position(position))
+    const filteredArray = filterPositions(positionsArray, filter);
+    container().innerHTML = filteredArray.reduce((all, pos) => all += pos.renderPosition(),'')
     containerTitle().textContent = 'All Positions'
   })
   // --- OLD IMPLEMENTATION USING FETCH INSIDE EACH RENDER --- 
@@ -39,9 +38,7 @@ const renderPositions = (filter) => {
 }
 
 const renderLocations = () => {
-  fetch(`${BASE_URL}/locations`)
-  .then(resp => resp.json())
-  .then(locations => {
+  getResourceAsync('locations').then(locations => {
     const locationsArray = locations.map(location => new Location(location))
     container().innerHTML = locationsArray.reduce((all, loc) => all += loc.renderLocation(),'')
     containerTitle().textContent = 'All Locations'
@@ -49,9 +46,7 @@ const renderLocations = () => {
 }
 
 const renderCategories = () => {
-  fetch(`${BASE_URL}/categories`)
-  .then(resp => resp.json())
-  .then(categories => {
+  getResourceAsync('categories').then(categories => {
     const categoriesArray = categories.map(category => new Category(category))
     container().innerHTML = categoriesArray.reduce((all, cat) => all += cat.renderCategory(),'')
     containerTitle().textContent = 'All Categories'
@@ -59,9 +54,7 @@ const renderCategories = () => {
 }
 
 const renderTechnologies = () => {
-  fetch(`${BASE_URL}/technologies`)
-  .then(resp => resp.json())
-  .then(technologies => {
+  getResourceAsync('technologies').then(technologies => {
     const technologiesArray = technologies.map(technology => new Technology(technology))
     container().innerHTML = technologiesArray.reduce((all, tec) => all += tec.renderTechnology(),'')
     containerTitle().textContent = 'All Technologies'
@@ -130,5 +123,5 @@ const createPosition = () => {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderPositions('bySalary')
+  renderPositions('byCompanyName')
 });
