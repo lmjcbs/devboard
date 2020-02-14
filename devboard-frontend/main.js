@@ -11,7 +11,7 @@ const filterPositions = (array, filter) => {
   console.log(filter)
   switch(filter) {
     case 'bySalary':
-      return array.sort((a,b) => (a.salaryGBP > b.salaryGBP) ? 1 : ((b.salaryGBP > a.salaryGBP) ? -1 : 0));
+      return array.sort((a,b) => (b.salaryGBP > a.salaryGBP) ? 1 : ((a.salaryGBP > b.salaryGBP) ? -1 : 0));
     case 'byCompanyName':
       return array.sort((a,b) => (a.company > b.company) ? 1 : ((b.company > a.company) ? -1 : 0));
     default:
