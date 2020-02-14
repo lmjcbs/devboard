@@ -2,6 +2,7 @@ const BASE_URL = 'http://localhost:3000'
 const containerTitle = () => document.querySelector('#container-title')
 const container = () => document.querySelector('#positions-container')
 
+// Abstract async fetch to return resource, avoids repetition in render functions
 async function getResourceAsync(resource) {
   let response = await fetch(`${BASE_URL}/${resource}`)
   return await response.json()
@@ -26,7 +27,7 @@ const renderPositions = (filter) => {
     container().innerHTML = filteredArrayArray.reduce((all, pos) => all += pos.renderPosition(),'')
     containerTitle().textContent = 'All Positions'
   })
-  // --- OLD IMPLEMENTATION USING FETCH --- 
+  // --- OLD IMPLEMENTATION USING FETCH INSIDE EACH RENDER --- 
   // fetch(`${BASE_URL}/positions`)
   // .then(resp => resp.json())
   // .then((positions) => {
