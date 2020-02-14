@@ -3,7 +3,7 @@ const containerTitle = () => document.querySelector('#container-title')
 const container = () => document.querySelector('#positions-container')
 
 // Abstract async fetch to return resource, avoids repetition in render functions
-async function getResourceAsync(resource) {
+const getResourceAsync = async resource => {
   let response = await fetch(`${BASE_URL}/${resource}`)
   return await response.json()
 }
