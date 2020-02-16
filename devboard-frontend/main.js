@@ -1,40 +1,54 @@
-const BASE_URL = 'http://localhost:3000'
-const containerTitle = () => document.querySelector('#container-title')
-const container = () => document.querySelector('#positions-container')
+const Position = require('./position');
+
+const BASE_URL = 'http://localhost:3000';
+const containerTitle = () => document.querySelector('#container-title');
+const container = () => document.querySelector('#positions-container');
 
 // Abstract async fetch to return resource, avoids repetition in render functions
-const getResourceAsync = async resource => {
-  let response = await fetch(`${BASE_URL}/${resource}`)
-  return await response.json()
-}
+const getResourceAsync = async (resource) => {
+  const response = await fetch(`${BASE_URL}/${resource}`);
+  return response.json();
+};
 
-const filterPositions = (array, filter) => {
-  switch(filter) {
+const filterPositions = (positionsArray, filter) => {
+  switch (filter) {
     case 'bySalary':
-      return array.sort((a,b) => (b.salaryGBP > a.salaryGBP) ? 1 : ((a.salaryGBP > b.salaryGBP) ? -1 : 0));
+      return positionsArray.sort((a, b) => {
+        let output;
+        if (b.salaryGBP > a.salaryGBP) {
+          output = 1;
+        } else if (a.salaryGBP > b.salaryGBP) {
+          output = -1;
+        } return output || 0;
+      });
     case 'byCompanyName':
-      return array.sort((a,b) => (a.company > b.company) ? 1 : ((b.company > a.company) ? -1 : 0));
+      return positionsArray.sort((a, b) => {
+        let output;
+        if (a.company > b.company) {
+          output = 1;
+        } else if (b.company > a.company) {
+          output = -1;
+        } return output || 0;
+      });
     default:
-      return array
+      return positionsArray;
   }
-}
+};
 
-const filterPositionsBySearch = searchTerm => {
-  return getResourceAsync('positions').then(positions => {
-    return positions.filter(pos => {
-      return pos.title.includes(searchTerm) || pos.company.includes(searchTerm)
-    })
-  })
-}
+const filterPositionsBySearch = (searchTerm) => getResourceAsync('positions').then((positions) => positions.filter((pos) => pos.title.includes(searchTerm) || pos.company.includes(searchTerm)));
 
-const renderPositions = (positions = getResourceAsync('positions'), filter = undefined) => {
-    positions.then(positions => {
-    const positionsArray = positions.map(position => new Position(position))
+const renderPositions = (allPositions = getResourceAsync('positions'), filter = undefined) => {
+  allPositions.then((positions) => {
+    const positionsArray = positions.map((position) => new Position(position));
     const filteredArray = filterPositions(positionsArray, filter);
-    container().innerHTML = filteredArray.reduce((all, pos) => all += pos.renderPosition(),'')
-    containerTitle().textContent = 'All Positions'
-  })
-  // --- OLD IMPLEMENTATION USING FETCH INSIDE EACH RENDER --- 
+    container().innerHTML = filteredArray.reduce((currentOutput, pos) => {
+      const newPosition = pos.renderPosition();
+      const newOutput = currentOutput + newPosition;
+      return newOutput;
+    }, '');
+    containerTitle().textContent = 'All Positions';
+  });
+  // --- OLD IMPLEMENTATION USING FETCH INSIDE EACH RENDER ---
   // fetch(`${BASE_URL}/positions`)
   // .then(resp => resp.json())
   // .then((positions) => {
@@ -43,34 +57,56 @@ const renderPositions = (positions = getResourceAsync('positions'), filter = und
   //   container().innerHTML = filteredArray.reduce((all, pos) => all += pos.renderPosition(),'')
   //   containerTitle().textContent = 'All Positions'
   // })
-}
+};
 
 const renderLocations = () => {
-  getResourceAsync('locations').then(locations => {
-    const locationsArray = locations.map(location => new Location(location))
-    container().innerHTML = locationsArray.reduce((all, loc) => all += loc.renderLocation(),'')
-    containerTitle().textContent = 'All Locations'
-  })
-}
+  getResourceAsync('locations').then((locations) => {
+    const locationsArray = locations.map((location) => new Location(location));
+    container().innerHTML = locationsArray.reduce((all, loc) => all += loc.renderLocation(), '');
+    containerTitle().textContent = 'All Locations';
+  });
+};
 
 const renderCategories = () => {
-  getResourceAsync('categories').then(categories => {
-    const categoriesArray = categories.map(category => new Category(category))
-    container().innerHTML = categoriesArray.reduce((all, cat) => all += cat.renderCategory(),'')
-    containerTitle().textContent = 'All Categories'
-  })
-}
+  getResourceAsync('categories').then((categories) => {
+    const categoriesArray = categories.map((category) => new Category(category));
+    container().innerHTML = categoriesArray.reduce((all, cat) => all += cat.renderCategory(), '');
+    containerTitle().textContent = 'All Categories';
+  });
+};
 
 const renderTechnologies = () => {
-  getResourceAsync('technologies').then(technologies => {
-    const technologiesArray = technologies.map(technology => new Technology(technology))
-    container().innerHTML = technologiesArray.reduce((all, tec) => all += tec.renderTechnology(),'')
-    containerTitle().textContent = 'All Technologies'
+  getResourceAsync('technologies').then((technologies) => {
+    const technologiesArray = technologies.map((technology) => new Technology(technology));
+    container().innerHTML = technologiesArray.reduce((all, tec) => all += tec.renderTechnology(), '');
+    containerTitle().textContent = 'All Technologies';
+  });
+};
+
+const createPosition = () => {
+  const position = {
+    title: document.querySelector('#title').value,
+    company: document.querySelector('#company').value,
+    location: document.querySelector('#location').value,
+    category: document.querySelector('#category').value,
+    technology: document.querySelector('#technology').value,
+    salary_gbp: document.querySelector('#salary-gbp').value,
+    experience_required: document.querySelector('#experience-required').value,
+    description: document.querySelector('#description').value,
+  };
+  fetch(`${BASE_URL}/positions`, {
+    method: 'POST',
+    body: JSON.stringify(position),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
   })
-}
+    .then(renderPositions());
+};
 
 const renderPositionForm = () => {
-  containerTitle().textContent = 'Advertise your own position'
+  containerTitle().textContent = 'Advertise your own position';
   container().innerHTML = `
     <form>
       <label for="title">Title</label>
@@ -99,41 +135,18 @@ const renderPositionForm = () => {
 
       <input type="submit" value="Submit">
     </form>
-  `
+  `;
   document.querySelector('input[type="submit"]').addEventListener('click', (e) => {
     e.preventDefault();
     createPosition();
-  })
-}
+  });
+};
 
-const createPosition = () => {
-  const position = {
-    title: document.querySelector('#title').value,
-    company: document.querySelector('#company').value,
-    location: document.querySelector('#location').value,
-    category: document.querySelector('#category').value,
-    technology: document.querySelector('#technology').value,
-    salary_gbp: document.querySelector('#salary-gbp').value,
-    experience_required: document.querySelector('#experience-required').value,
-    description: document.querySelector('#description').value
-  }
-  console.log(position)
-  fetch(`${BASE_URL}/positions`,{
-    method: "POST",
-    body: JSON.stringify(position),
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-  })
-  .then(renderPositions())
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderPositions()
+document.addEventListener('DOMContentLoaded', () => {
+  renderPositions();
   document.querySelector('input[type="search"]').addEventListener('search', (e) => {
     e.preventDefault();
-    let searchTerm = document.querySelector('input[type="search"]').value
-    renderPositions(filterPositionsBySearch(searchTerm))
-  })
+    const searchTerm = document.querySelector('input[type="search"]').value;
+    renderPositions(filterPositionsBySearch(searchTerm));
+  });
 });
