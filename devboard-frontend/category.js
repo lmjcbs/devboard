@@ -1,8 +1,8 @@
-class Category {
+module.exports = class Category {
   constructor(category) {
-    this.id = category.id
-    this.name = category.name
-    this.positions = category.positions
+    this.id = category.id;
+    this.name = category.name;
+    this.positions = category.positions;
   }
 
   renderCategory() {
@@ -10,6 +10,6 @@ class Category {
       <div>
         <h3>There are ${this.positions.length} ${this.name} positions available</h3>
       </div>
-    `
+    `;
   }
-}
+};
