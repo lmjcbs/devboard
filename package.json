@@ -1,0 +1,28 @@
+{
+  "name": "devboard",
+  "version": "1.0.0",
+  "description": "devboard is my Flatiron School JavaScript project. devboard is a SPA used to display jobs of all varieties for developers looking for their next opportunity. Users can see all positions, search for a particular position based on a keyword, or filter positions by location, category or technology.",
+  "main": "./devboard-frontend/main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmjcbs/devboard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lmjcbs/devboard/issues"
+  },
+  "homepage": "https://github.com/lmjcbs/devboard#readme"
+}
