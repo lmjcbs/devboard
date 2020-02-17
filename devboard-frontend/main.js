@@ -14,49 +14,44 @@ const filterPositions = (positionsArray, filter) => {
   switch (filter) {
     case 'bySalary':
       return positionsArray.sort((a, b) => {
-        let output;
-        if (b.salaryGBP > a.salaryGBP) {
-          output = 1;
-        } else if (a.salaryGBP > b.salaryGBP) {
-          output = -1;
-        } return output || 0;
+        switch (true) {
+          case (b.salaryGBP > a.salaryGBP):
+            return 1;
+          case (a.salaryGBP > b.salaryGBP):
+            return -1;
+          default:
+            return 0;
+        }
       });
     case 'byCompanyName':
       return positionsArray.sort((a, b) => {
-        let output;
-        if (a.company > b.company) {
-          output = 1;
-        } else if (b.company > a.company) {
-          output = -1;
-        } return output || 0;
+        switch (true) {
+          case (a.company > b.company):
+            return 1;
+          case (b.company > a.company):
+            return -1;
+          default:
+            return 0;
+        }
       });
     default:
       return positionsArray;
   }
 };
 
-const filterPositionsBySearch = (searchTerm) => getResourceAsync('positions').then((positions) => positions.filter((pos) => pos.title.includes(searchTerm) || pos.company.includes(searchTerm)));
+const filterPositionsBySearch = (searchTerm) => (
+  getResourceAsync('positions').then((positions) => positions.filter((pos) => (
+    pos.title.includes(searchTerm) || pos.company.includes(searchTerm)
+  )))
+);
 
 const renderPositions = (allPositions = getResourceAsync('positions'), filter = undefined) => {
   allPositions.then((positions) => {
     const positionsArray = positions.map((position) => new Position(position));
     const filteredArray = filterPositions(positionsArray, filter);
-    container().innerHTML = filteredArray.reduce((currentOutput, pos) => {
-      const newPosition = pos.renderPosition();
-      const newOutput = currentOutput + newPosition;
-      return newOutput;
-    }, '');
+    container().innerHTML = filteredArray.reduce((currentOutput, pos) => currentOutput + pos.renderPosition(), '');
     containerTitle().textContent = 'All Positions';
   });
-  // --- OLD IMPLEMENTATION USING FETCH INSIDE EACH RENDER ---
-  // fetch(`${BASE_URL}/positions`)
-  // .then(resp => resp.json())
-  // .then((positions) => {
-  //   const positionsArray = positions.map(position => new Position(position))
-  //   const filteredArray = filterPositions(positionsArray, filter);
-  //   container().innerHTML = filteredArray.reduce((all, pos) => all += pos.renderPosition(),'')
-  //   containerTitle().textContent = 'All Positions'
-  // })
 };
 
 const renderLocations = () => {
