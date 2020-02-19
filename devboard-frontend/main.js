@@ -1,5 +1,3 @@
-const Position = require('./position');
-
 const BASE_URL = 'http://localhost:3000';
 const containerTitle = () => document.querySelector('#container-title');
 const container = () => document.querySelector('#positions-container');
@@ -45,11 +43,11 @@ const filterPositionsBySearch = (searchTerm) => (
   )))
 );
 
-const renderPositions = (allPositions = getResourceAsync('positions'), filter = undefined) => {
-  allPositions.then((positions) => {
+const renderPositions = (positionsPromise = getResourceAsync('positions'), filter = undefined) => {
+  positionsPromise.then((positions) => {
     const positionsArray = positions.map((position) => new Position(position));
     const filteredArray = filterPositions(positionsArray, filter);
-    container().innerHTML = filteredArray.reduce((currentOutput, pos) => currentOutput + pos.renderPosition(), '');
+    container().innerHTML = filteredArray.reduce((total, pos) => total + pos.renderPosition(), '');
     containerTitle().textContent = 'All Positions';
   });
 };
@@ -57,7 +55,7 @@ const renderPositions = (allPositions = getResourceAsync('positions'), filter = 
 const renderLocations = () => {
   getResourceAsync('locations').then((locations) => {
     const locationsArray = locations.map((location) => new Location(location));
-    container().innerHTML = locationsArray.reduce((all, loc) => all += loc.renderLocation(), '');
+    container().innerHTML = locationsArray.reduce((total, loc) => total + loc.renderLocation(), '');
     containerTitle().textContent = 'All Locations';
   });
 };
@@ -65,7 +63,7 @@ const renderLocations = () => {
 const renderCategories = () => {
   getResourceAsync('categories').then((categories) => {
     const categoriesArray = categories.map((category) => new Category(category));
-    container().innerHTML = categoriesArray.reduce((all, cat) => all += cat.renderCategory(), '');
+    container().innerHTML = categoriesArray.reduce((total, cat) => total + cat.renderCategory(), '');
     containerTitle().textContent = 'All Categories';
   });
 };
@@ -73,7 +71,7 @@ const renderCategories = () => {
 const renderTechnologies = () => {
   getResourceAsync('technologies').then((technologies) => {
     const technologiesArray = technologies.map((technology) => new Technology(technology));
-    container().innerHTML = technologiesArray.reduce((all, tec) => all += tec.renderTechnology(), '');
+    container().innerHTML = technologiesArray.reduce((total, tec) => total + tec.renderTechnology(), '');
     containerTitle().textContent = 'All Technologies';
   });
 };
@@ -96,8 +94,7 @@ const createPosition = () => {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
-  })
-    .then(renderPositions());
+  }).then(renderPositions());
 };
 
 const renderPositionForm = () => {
@@ -137,11 +134,19 @@ const renderPositionForm = () => {
   });
 };
 
+// render advertise positions form event listener
+document.querySelector('#advertise-job').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderPositionForm();
+});
+
+// add search function listener to search bar
+document.querySelector('input[type="search"]').addEventListener('search', (e) => {
+  e.preventDefault();
+  const searchTerm = document.querySelector('input[type="search"]').value;
+  renderPositions(filterPositionsBySearch(searchTerm));
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-  renderPositions();
-  document.querySelector('input[type="search"]').addEventListener('search', (e) => {
-    e.preventDefault();
-    const searchTerm = document.querySelector('input[type="search"]').value;
-    renderPositions(filterPositionsBySearch(searchTerm));
-  });
+  renderPositions(getResourceAsync('positions'));
 });
