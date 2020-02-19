@@ -8,6 +8,7 @@ const getResourceAsync = async (resource) => {
   return response.json();
 };
 
+// Order positions by salary or company name filter term
 const filterPositions = (positionsArray, filter) => {
   switch (filter) {
     case 'bySalary':
@@ -37,6 +38,7 @@ const filterPositions = (positionsArray, filter) => {
   }
 };
 
+// returns positions by title or company name if match
 const filterPositionsBySearch = (searchTerm) => (
   getResourceAsync('positions').then((positions) => positions.filter((pos) => (
     pos.title.includes(searchTerm) || pos.company.includes(searchTerm)
@@ -76,6 +78,7 @@ const renderTechnologies = () => {
   });
 };
 
+// POSTs position to /positions, handled by PositionsController#create
 const createPosition = () => {
   const position = {
     title: document.querySelector('#title').value,
@@ -128,13 +131,14 @@ const renderPositionForm = () => {
       <input type="submit" value="Submit">
     </form>
   `;
+  // Override default form submit, post data using fetch
   document.querySelector('input[type="submit"]').addEventListener('click', (e) => {
     e.preventDefault();
     createPosition();
   });
 };
 
-// render resouce event listeners
+// render resource event listeners
 document.querySelector('#positions-link').addEventListener('click', (e) => {
   e.preventDefault();
   renderPositions(getResourceAsync('positions'));
@@ -162,9 +166,10 @@ document.querySelector('#advertise-job').addEventListener('click', (e) => {
 });
 
 // add search function listener to search bar
-document.querySelector('input[type="search"]').addEventListener('search', (e) => {
+const searchBar = document.querySelector('input[type="search"]');
+searchBar.addEventListener('search', (e) => {
   e.preventDefault();
-  const searchTerm = document.querySelector('input[type="search"]').value;
+  const searchTerm = searchBar.value;
   renderPositions(filterPositionsBySearch(searchTerm));
 });
 
