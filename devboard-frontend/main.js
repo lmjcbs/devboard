@@ -134,6 +134,27 @@ const renderPositionForm = () => {
   });
 };
 
+// render resouce event listeners
+document.querySelector('#positions-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderPositions(getResourceAsync('positions'));
+});
+
+document.querySelector('#locations-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderLocations();
+});
+
+document.querySelector('#categories-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderCategories();
+});
+
+document.querySelector('#technologies-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderTechnologies();
+});
+
 // render advertise positions form event listener
 document.querySelector('#advertise-job').addEventListener('click', (e) => {
   e.preventDefault();
