@@ -1,4 +1,4 @@
-module.exports = class Location {
+class Location {
   constructor(location) {
     this.id = location.id;
     this.city = location.city;
@@ -12,4 +12,4 @@ module.exports = class Location {
       </div>
     `;
   }
-};
+}

@@ -1,4 +1,4 @@
-module.exports = class Category {
+class Category {
   constructor(category) {
     this.id = category.id;
     this.name = category.name;
@@ -12,4 +12,4 @@ module.exports = class Category {
       </div>
     `;
   }
-};
+}

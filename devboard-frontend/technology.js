@@ -1,4 +1,4 @@
-module.exports = class Technology {
+class Technology {
   constructor(technology) {
     this.id = technology.id;
     this.name = technology.name;
@@ -12,4 +12,4 @@ module.exports = class Technology {
       </div>
     `;
   }
-};
+}

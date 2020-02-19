@@ -1,4 +1,4 @@
-module.exports = class Position {
+class Position {
   constructor(pos) {
     this.id = pos.id;
     this.title = pos.title;
@@ -24,4 +24,4 @@ module.exports = class Position {
     <hr>
     `;
   }
-};
+}
