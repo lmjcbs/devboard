@@ -27,6 +27,8 @@ const filterPositions = (positionsArray, filter) => {
             return 0;
         }
       });
+    case 'bySalaryReversed':
+      return positionsArray.sort((a, b) => a.salaryGBP - b.salaryGBP);
     default:
       return positionsArray;
   }
@@ -146,6 +148,12 @@ document.querySelector('#filter-by-company').addEventListener('click', (e) => {
   e.preventDefault();
   renderPositions(getResourceAsync('positions'), 'byCompanyName');
 });
+
+document.querySelector('#filter-by-salary-reversed').addEventListener('click', (e) => {
+  e.preventDefault();
+  renderPositions(getResourceAsync('positions'), 'bySalaryReversed');
+});
+
 
 // render resource event listeners
 document.querySelector('#positions-link').addEventListener('click', (e) => {
