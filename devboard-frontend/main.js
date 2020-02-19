@@ -12,22 +12,16 @@ const getResourceAsync = async (resource) => {
 const filterPositions = (positionsArray, filter) => {
   switch (filter) {
     case 'bySalary':
-      return positionsArray.sort((a, b) => {
-        switch (true) {
-          case (b.salaryGBP > a.salaryGBP):
-            return 1;
-          case (a.salaryGBP > b.salaryGBP):
-            return -1;
-          default:
-            return 0;
-        }
-      });
+      return positionsArray.sort((a, b) => b.salaryGBP - a.salaryGBP);
     case 'byCompanyName':
       return positionsArray.sort((a, b) => {
+        // Ignores company name casing
+        const comapanyA = a.company.toUpperCase();
+        const comapanyB = b.company.toUpperCase();
         switch (true) {
-          case (a.company > b.company):
+          case (comapanyA > comapanyB):
             return 1;
-          case (b.company > a.company):
+          case (comapanyB > comapanyA):
             return -1;
           default:
             return 0;
@@ -40,9 +34,14 @@ const filterPositions = (positionsArray, filter) => {
 
 // returns positions by title or company name if match
 const filterPositionsBySearch = (searchTerm) => (
-  getResourceAsync('positions').then((positions) => positions.filter((pos) => (
-    pos.title.includes(searchTerm) || pos.company.includes(searchTerm)
-  )))
+  getResourceAsync('positions').then((positions) => {
+    let filtered = positions.filter((pos) => (
+      pos.title.includes(searchTerm) || pos.company.includes(searchTerm)
+    ));
+    filtered = filtered.map((position) => new Position(position));
+    container().innerHTML = filtered.reduce((total, pos) => total + pos.renderPosition(), '');
+    containerTitle().textContent = `Showing results for '${searchTerm}'`;
+  })
 );
 
 const renderPositions = (positionsPromise = getResourceAsync('positions'), filter = undefined) => {
@@ -137,6 +136,20 @@ const renderPositionForm = () => {
     createPosition();
   });
 };
+// add event listeners to filter buttons
+document.querySelector('#filter-by-salary').addEventListener('click', (e) => {
+  console.log(e);
+  console.log('clicked!');
+  e.preventDefault();
+  renderPositions(getResourceAsync('positions'), 'bySalary');
+});
+
+document.querySelector('#filter-by-company').addEventListener('click', (e) => {
+  console.log(e);
+  console.log('clicked!');
+  e.preventDefault();
+  renderPositions(getResourceAsync('positions'), 'byCompanyName');
+});
 
 // render resource event listeners
 document.querySelector('#positions-link').addEventListener('click', (e) => {
@@ -170,7 +183,7 @@ const searchBar = document.querySelector('input[type="search"]');
 searchBar.addEventListener('search', (e) => {
   e.preventDefault();
   const searchTerm = searchBar.value;
-  renderPositions(filterPositionsBySearch(searchTerm));
+  (filterPositionsBySearch(searchTerm));
 });
 
 document.addEventListener('DOMContentLoaded', () => {
