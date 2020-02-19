@@ -138,15 +138,11 @@ const renderPositionForm = () => {
 };
 // add event listeners to filter buttons
 document.querySelector('#filter-by-salary').addEventListener('click', (e) => {
-  console.log(e);
-  console.log('clicked!');
   e.preventDefault();
   renderPositions(getResourceAsync('positions'), 'bySalary');
 });
 
 document.querySelector('#filter-by-company').addEventListener('click', (e) => {
-  console.log(e);
-  console.log('clicked!');
   e.preventDefault();
   renderPositions(getResourceAsync('positions'), 'byCompanyName');
 });
